@@ -1,0 +1,17 @@
+{
+  "name":           "ikagaka.ghost.js",
+  "version":        "0.0.1",
+  "description":    "",
+  "url":            "https://github.com/ikagaka/Ghost.js",
+  "keywords":       ["nar", "ikagaka", "unstable", "ukagaka"],
+  "repository": {
+    "type":         "git",
+    "url":          "https://github.com/ikagaka/Ghost.js"
+  },
+  "dependencies": {
+    "ikagaka.nar.js": ""
+  },
+  "devDependencies": {
+  },
+  "license":        "MIT"
+}
