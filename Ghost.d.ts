@@ -12,7 +12,7 @@ declare class Ghost {
 
 declare module Ghost {
   function initShioriWorker(src: string, tree: any, callback: (error: any)=> void): WebWorker;
-  function unzipAll(tree: any): {directory: any, buffers: ArrayBuffer[]};
+  function unzipAll(tree: any): {directory: any; buffers: ArrayBuffer[]};
   function detectShiori(buffer: ArrayBuffer): string; // unstable
   function createRequest(method, event: { [key: string]: string; };): string; // unstable
   function parseResponse(response: string;): { [key: string]: string; }; // unstable

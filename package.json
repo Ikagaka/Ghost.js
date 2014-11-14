@@ -9,7 +9,10 @@
     "url":          "https://github.com/ikagaka/Ghost.js"
   },
   "dependencies": {
-    "ikagaka.nar.js": ""
+    "ikagaka.nar.js": "",
+    "ikagaka..js": "",
+    "shiorijk": "",
+    "miyojs": ""
   },
   "devDependencies": {
   },
