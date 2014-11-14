@@ -7,7 +7,7 @@ self.importScripts("vender/kawarishiori.js")
 shiori = new KawariShiori()
 Module = shiori.Module;
 FS = shiori.FS;
-
+Module['logReadFiles'] = true
 
 self.onmessage = ({data: {event, data}})->
   switch event
@@ -21,6 +21,7 @@ self.onmessage = ({data: {event, data}})->
           else
             FS.writeFile("/home/web_user/" + filepath, directory[filepath], {encoding: 'binary'})
             console.log "/home/web_user/" + filepath
+      console.log kis = Encoding.codeToString(FS.readFile('/home/web_user/kawarirc.kis'));
       FS.chdir('/home/web_user')
       console.log shiori.load("/home/web_user/kawarirc.kis")
       self.postMessage({"event": "loaded", "error": null})
