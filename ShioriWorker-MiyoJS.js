@@ -45,7 +45,6 @@ self.onmessage = function(_arg) {
         }
         return dictionary;
       }), {});
-      console.log(dictionary);
       shiori = new Miyo(dictionary);
       shiori.load({});
       console.log(shiori);
@@ -57,7 +56,6 @@ self.onmessage = function(_arg) {
       requestTxt = data;
       paser = new ShioriJK.Shiori.Request.Parser();
       request = paser.parse(requestTxt);
-      console.log(request.request_line.version);
       console.log(request);
       response = shiori.request(request);
       console.log(response);

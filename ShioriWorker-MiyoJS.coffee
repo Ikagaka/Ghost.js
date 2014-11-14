@@ -28,7 +28,6 @@ self.onmessage = ({data: {event, data}})->
             console.log err
         dictionary
       ), {})
-      console.log dictionary
       shiori = new Miyo(dictionary)
       shiori.load({})
       console.log shiori
@@ -37,7 +36,6 @@ self.onmessage = ({data: {event, data}})->
       requestTxt = data
       paser = new ShioriJK.Shiori.Request.Parser()
       request = paser.parse(requestTxt)
-      console.log request.request_line.version
       console.log request
       response = shiori.request(request)
       console.log response
