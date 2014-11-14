@@ -10,12 +10,16 @@ Ghost = (function() {
 
   Worker = window["Worker"];
 
-  function Ghost(tree) {
-    if (!tree["descript.txt"]) {
+  function Ghost(directory) {
+    var buffer, descriptTxt;
+    console.log(directory);
+    if (!directory["descript.txt"]) {
       throw new Error("descript.txt not found");
     }
-    this.tree = tree;
-    this.descript = Nar.parseDescript(Nar.convert(this.tree["descript.txt"].asArrayBuffer()));
+    this.directory = directory;
+    buffer = this.directory["descript.txt"].asArrayBuffer();
+    descriptTxt = Nar.convert(buffer);
+    this.descript = Nar.parseDescript(descriptTxt);
     this.worker = null;
   }
 
@@ -24,10 +28,10 @@ Ghost = (function() {
     if (!this.descript["shiori"]) {
       return callback(new Error("shiori not found"));
     }
-    if (!this.tree[this.descript["shiori"]]) {
+    if (!this.directory[this.descript["shiori"]]) {
       return callback(new Error("shiori not found"));
     }
-    switch (Ghost.detectShiori(this.tree[this.descript["shiori"]].asArrayBuffer())) {
+    switch (Ghost.detectShiori(this.directory[this.descript["shiori"]].asArrayBuffer())) {
       case "satori":
         return callback(new Error("unsupport shiori"));
       case "kawari":
@@ -42,7 +46,7 @@ Ghost = (function() {
       default:
         return callback(new Error("cannot detect shiori type: " + this.descript["shiori"]));
     }
-    _ref = Ghost.createTransferable(this.tree), directory = _ref.directory, buffers = _ref.buffers;
+    _ref = Ghost.createTransferable(this.directory), directory = _ref.directory, buffers = _ref.buffers;
     this.worker.postMessage({
       event: "load",
       data: directory
@@ -90,21 +94,13 @@ Ghost = (function() {
     return "miyojs";
   };
 
-  Ghost.createTransferable = function(tree) {
-    return Object.keys(tree).reduce((function(_arg, filename) {
-      var buffer, buffers, directory, _buffers, _directory, _ref;
+  Ghost.createTransferable = function(_directory) {
+    return Object.keys(_directory).reduce((function(_arg, filename) {
+      var buffer, buffers, directory;
       directory = _arg.directory, buffers = _arg.buffers;
-      if (!!filename && !!tree[filename]) {
-        if (typeof tree[filename].dir === "boolean") {
-          buffer = tree[filename].asArrayBuffer();
-          buffers.push(buffer);
-          directory[filename] = buffer;
-        } else {
-          _ref = Ghost.createTransferable(tree[filename]), _directory = _ref.directory, _buffers = _ref.buffers;
-          directory[filename] = _directory;
-          buffers = buffers.concat(_buffers);
-        }
-      }
+      buffer = _directory[filename].asArrayBuffer();
+      directory[filename] = buffer;
+      buffers.push(buffer);
       return {
         directory: directory,
         buffers: buffers
