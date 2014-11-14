@@ -25,10 +25,7 @@ Ghost = (function() {
 
   Ghost.prototype.load = function(callback) {
     var buffers, directory, _ref;
-    if (!this.descript["shiori"]) {
-      return callback(new Error("shiori not found"));
-    }
-    if (!this.directory[this.descript["shiori"]]) {
+    if (!this.directory[this.descript["shiori"]] && !this.directory["shiori.dll"]) {
       return callback(new Error("shiori not found"));
     }
     switch (Ghost.detectShiori(this.directory)) {
@@ -92,9 +89,17 @@ Ghost = (function() {
   Ghost.detectShiori = function(directory) {
     if (!!directory["kawarirc.kis"]) {
       return "kawari";
-    } else {
+    }
+    if (!!directory["satori_conf.txt"]) {
+      return "satori";
+    }
+    if (!!directory["yaya.dll"]) {
+      return "yaya";
+    }
+    if (!!directory["node.exe"]) {
       return "miyojs";
     }
+    return "";
   };
 
   Ghost.createTransferable = function(_directory) {

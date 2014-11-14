@@ -15,8 +15,7 @@ class Ghost
     @worker = null
 
   load: (callback)->
-    if !@descript["shiori"]        then return callback(new Error("shiori not found"))
-    if !@directory[@descript["shiori"]] then return callback(new Error("shiori not found"))
+    if !@directory[@descript["shiori"]] and !@directory["shiori.dll"] then return callback(new Error("shiori not found"))
     switch Ghost.detectShiori(@directory)
       when "satori" then return callback(new Error("unsupport shiori"))
       when "yaya"   then return callback(new Error("unsupport shiori"))
@@ -42,8 +41,11 @@ class Ghost
     undefined
 
   @detectShiori = (directory)->
-    if !!directory["kawarirc.kis"] then "kawari"
-    else "miyojs"
+    if !!directory["kawarirc.kis"]    then return "kawari"
+    if !!directory["satori_conf.txt"] then return "satori"
+    if !!directory["yaya.dll"]        then return "yaya"
+    if !!directory["node.exe"]        then return "miyojs"
+    return ""
 
 
   @createTransferable: (_directory)->

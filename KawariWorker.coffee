@@ -13,15 +13,13 @@ self.onmessage = ({data: {event, data}})->
   switch event
     when "load"
       directory = data
-      Object
-        .keys(directory)
-        .forEach (filepath)->
-          if /\/$/.test(filepath)
-          then FS.mkdir("/home/web_user/"+filepath.replace(/\/$/, ""))
-          else
-            FS.writeFile("/home/web_user/" + filepath, directory[filepath], {encoding: 'binary'})
-            console.log "/home/web_user/" + filepath
-      console.log kis = Encoding.codeToString(FS.readFile('/home/web_user/kawarirc.kis'));
+      for filepath in Object.keys(directory)
+        if /\/$/.test(filepath)
+        then FS.mkdir("/home/web_user/"+filepath.replace(/\/$/, ""))
+        else
+          uint8arr = new Uint8Array(directory[filepath])
+          console.log "/home/web_user/" + filepath, uint8arr.length
+          FS.writeFile("/home/web_user/" + filepath, uint8arr, {encoding: 'binary'})
       FS.chdir('/home/web_user')
       console.log shiori.load("/home/web_user/kawarirc.kis")
       self.postMessage({"event": "loaded", "error": null})

@@ -15,22 +15,27 @@ Module = shiori.Module;
 
 FS = shiori.FS;
 
+Module['logReadFiles'] = true;
+
 self.onmessage = function(_arg) {
-  var data, directory, event, request, response, _ref;
+  var data, directory, event, filepath, request, response, uint8arr, _i, _len, _ref, _ref1;
   _ref = _arg.data, event = _ref.event, data = _ref.data;
   switch (event) {
     case "load":
       directory = data;
-      Object.keys(directory).forEach(function(filepath) {
+      _ref1 = Object.keys(directory);
+      for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+        filepath = _ref1[_i];
         if (/\/$/.test(filepath)) {
-          return FS.mkdir("/home/web_user/" + filepath.replace(/\/$/, ""));
+          FS.mkdir("/home/web_user/" + filepath.replace(/\/$/, ""));
         } else {
-          FS.writeFile("/home/web_user/" + filepath, directory[filepath], {
+          uint8arr = new Uint8Array(directory[filepath]);
+          console.log("/home/web_user/" + filepath, uint8arr.length);
+          FS.writeFile("/home/web_user/" + filepath, uint8arr, {
             encoding: 'binary'
           });
-          return console.log("/home/web_user/" + filepath);
         }
-      });
+      }
       FS.chdir('/home/web_user');
       console.log(shiori.load("/home/web_user/kawarirc.kis"));
       return self.postMessage({
