@@ -12,7 +12,7 @@ declare class Ghost {
 
 declare module Ghost {
   function createTransferable(directory: JSZipDirectory): {directory: {[filename: string]: ArrayBuffer; }; buffers: ArrayBuffer[]; }; // unstable
-  function detectShiori(buffer: ArrayBuffer): string; // unstable
+  function detectShiori(directory: JSZipDirectory): string; // unstable
 }
 
 declare module 'ghost' {

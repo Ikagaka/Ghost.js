@@ -7,7 +7,7 @@
 <script src="./Ghost.js"></script>
 <script>
 var nar = new Nar();
-nar.loadFromURL("./vender/net.narazaka.miyopreview.nar", function (err){
+nar.loadFromURL("./vender/TempleteKarin.nar", function (err){
   if(!!err) return console.error(err.stack);
 
   if(nar.install.type === "ghost"){
@@ -25,7 +25,7 @@ nar.loadFromURL("./vender/net.narazaka.miyopreview.nar", function (err){
 
     console.log(ghost);
 
-    ghost.request("GET SHIORI/3.0\r\nSender: Ikagaka\r\nID: OnBoot\r\n\r\n", function(err, response){
+    ghost.request("GET SHIORI/3.0\r\nID: Boot\r\nSender: ikagaka\r\nCharset: UTF-8\r\nReference0: master\r\n\r\n", function(err, response){
       if(!!err) return console.error(err.stack);
 
       console.log(response);

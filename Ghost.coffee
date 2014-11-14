@@ -17,11 +17,10 @@ class Ghost
   load: (callback)->
     if !@descript["shiori"]        then return callback(new Error("shiori not found"))
     if !@directory[@descript["shiori"]] then return callback(new Error("shiori not found"))
-    switch Ghost.detectShiori(@directory[@descript["shiori"]].asArrayBuffer())
+    switch Ghost.detectShiori(@directory)
       when "satori" then return callback(new Error("unsupport shiori"))
-      when "kawari" then return callback(new Error("unsupport shiori"))
       when "yaya"   then return callback(new Error("unsupport shiori"))
-      when "kawari" then return callback(new Error("unsupport shiori"))
+      when "kawari" then @worker = new Worker("./KawariWorker.js")
       when "miyojs" then @worker = new Worker("./MiyoJSWorker.js")
       else return callback(new Error("cannot detect shiori type: "+ @descript["shiori"]))
     {directory, buffers} = Ghost.createTransferable(@directory)
@@ -42,14 +41,17 @@ class Ghost
       if event is "unloaded" then callback(error)
     undefined
 
-  @detectShiori = (buffer)->
-    "miyojs"
+  @detectShiori = (directory)->
+    if !!directory["kawarirc.kis"] then "kawari"
+    else "miyojs"
+
 
   @createTransferable: (_directory)->
     Object.keys(_directory)
-      .reduce((({directory, buffers}, filename)->
-        buffer = _directory[filename].asArrayBuffer()
-        directory[filename] = buffer
+      .filter((filepath)-> !!filepath)
+      .reduce((({directory, buffers}, filepath)->
+        buffer = _directory[filepath].asArrayBuffer()
+        directory[filepath] = buffer
         buffers.push(buffer)
         {directory, buffers}
       ), {directory: {}, buffers: []})

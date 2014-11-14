@@ -31,17 +31,16 @@ Ghost = (function() {
     if (!this.directory[this.descript["shiori"]]) {
       return callback(new Error("shiori not found"));
     }
-    switch (Ghost.detectShiori(this.directory[this.descript["shiori"]].asArrayBuffer())) {
+    switch (Ghost.detectShiori(this.directory)) {
       case "satori":
-        return callback(new Error("unsupport shiori"));
-      case "kawari":
         return callback(new Error("unsupport shiori"));
       case "yaya":
         return callback(new Error("unsupport shiori"));
       case "kawari":
-        return callback(new Error("unsupport shiori"));
+        this.worker = new Worker("./KawariWorker.js");
+        break;
       case "miyojs":
-        this.worker = new Worker("./ShioriWorker-MiyoJS.js");
+        this.worker = new Worker("./MiyoJSWorker.js");
         break;
       default:
         return callback(new Error("cannot detect shiori type: " + this.descript["shiori"]));
@@ -90,16 +89,22 @@ Ghost = (function() {
     return void 0;
   };
 
-  Ghost.detectShiori = function(buffer) {
-    return "miyojs";
+  Ghost.detectShiori = function(directory) {
+    if (!!directory["kawarirc.kis"]) {
+      return "kawari";
+    } else {
+      return "miyojs";
+    }
   };
 
   Ghost.createTransferable = function(_directory) {
-    return Object.keys(_directory).reduce((function(_arg, filename) {
+    return Object.keys(_directory).filter(function(filepath) {
+      return !!filepath;
+    }).reduce((function(_arg, filepath) {
       var buffer, buffers, directory;
       directory = _arg.directory, buffers = _arg.buffers;
-      buffer = _directory[filename].asArrayBuffer();
-      directory[filename] = buffer;
+      buffer = _directory[filepath].asArrayBuffer();
+      directory[filepath] = buffer;
       buffers.push(buffer);
       return {
         directory: directory,
