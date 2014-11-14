@@ -27,11 +27,11 @@ self.onmessage = function(_arg) {
   switch (event) {
     case "load":
       directory = data;
-      dictionary = Object.keys(directory).filter(function(filename) {
-        return /^dictionaries\/[^/]+$/.test(filename);
-      }).reduce((function(dictionary, filename) {
+      dictionary = Object.keys(directory).filter(function(filepath) {
+        return /^dictionaries\/[^/]+$/.test(filepath);
+      }).reduce((function(dictionary, filepath) {
         var dic, tabIndentedYaml, uint8Arr, yaml;
-        uint8Arr = new Uint8Array(directory[filename]);
+        uint8Arr = new Uint8Array(directory[filepath]);
         tabIndentedYaml = Encoding.codeToString(Encoding.convert(uint8Arr, 'UNICODE', 'AUTO'));
         yaml = tabIndentedYaml.replace(/\t/g, ' ');
         dic = jsyaml.safeLoad(yaml);

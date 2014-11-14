@@ -20,6 +20,8 @@ nar.loadFromURL("./vender/TempleteKarin.nar", function (err){
     throw new Error("wrong nar file")
   }
 
+  Error.stackTraceLimit = Infinity;
+
   ghost.load(function(err){
     if(!!err) return console.error(err.stack);
 

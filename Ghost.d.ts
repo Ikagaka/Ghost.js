@@ -6,12 +6,12 @@ declare class Ghost {
   unload(callback: (error: any) => void): void; // stable
   descript: Descript; // stable
   directory: JSZipDirectory; // stable
-  worker: Worker; // unstable
+  worker: Worker; // stable
 }
 
 
 declare module Ghost {
-  function createTransferable(directory: JSZipDirectory): {directory: {[filename: string]: ArrayBuffer; }; buffers: ArrayBuffer[]; }; // unstable
+  function createTransferable(directory: JSZipDirectory): {directory: {[filepath: string]: ArrayBuffer; }; buffers: ArrayBuffer[]; }; // stable
   function detectShiori(directory: JSZipDirectory): string; // unstable
 }
 

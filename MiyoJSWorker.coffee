@@ -17,9 +17,9 @@ self.onmessage = ({data: {event, data}})->
       directory = data
       dictionary = Object
         .keys(directory)
-        .filter((filename)-> /^dictionaries\/[^/]+$/.test(filename))
-        .reduce(((dictionary, filename)->
-          uint8Arr = new Uint8Array(directory[filename])
+        .filter((filepath)-> /^dictionaries\/[^/]+$/.test(filepath))
+        .reduce(((dictionary, filepath)->
+          uint8Arr = new Uint8Array(directory[filepath])
           tabIndentedYaml = Encoding.codeToString(Encoding.convert(uint8Arr, 'UNICODE', 'AUTO'))
           yaml = tabIndentedYaml.replace(/\t/g, ' ')
           dic = jsyaml.safeLoad (yaml)
