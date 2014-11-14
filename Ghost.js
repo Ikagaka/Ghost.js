@@ -2,11 +2,11 @@
 var Ghost;
 
 Ghost = (function() {
-  var Nar, ShioriJK, Worker;
+  var Nar, Worker, _;
+
+  _ = window["_"];
 
   Nar = window["Nar"];
-
-  ShioriJK = window["ShioriJK"];
 
   Worker = window["Worker"];
 
@@ -42,7 +42,7 @@ Ghost = (function() {
       default:
         return callback(new Error("cannot detect shiori type: " + this.descript["shiori"]));
     }
-    console.log((_ref = Ghost.createTransferable(this.tree), directory = _ref.directory, buffers = _ref.buffers, _ref));
+    _ref = Ghost.createTransferable(this.tree), directory = _ref.directory, buffers = _ref.buffers;
     this.worker.postMessage({
       event: "load",
       data: directory
@@ -92,13 +92,18 @@ Ghost = (function() {
 
   Ghost.createTransferable = function(tree) {
     return Object.keys(tree).reduce((function(_arg, filename) {
-      var buffer, buffers, directory;
+      var buffer, buffers, directory, _buffers, _directory, _ref;
       directory = _arg.directory, buffers = _arg.buffers;
-      if (!!tree[filename] && tree[filename].dir instanceof Boolean) {
-        console.log(tree[filename]);
-        buffer = tree[filename].asArrayBuffer();
-        buffers.push(buffer);
-        directory[filename] = buffer;
+      if (!!filename && !!tree[filename]) {
+        if (typeof tree[filename].dir === "boolean") {
+          buffer = tree[filename].asArrayBuffer();
+          buffers.push(buffer);
+          directory[filename] = buffer;
+        } else {
+          _ref = Ghost.createTransferable(tree[filename]), _directory = _ref.directory, _buffers = _ref.buffers;
+          directory[filename] = _directory;
+          buffers = buffers.concat(_buffers);
+        }
       }
       return {
         directory: directory,
@@ -108,24 +113,6 @@ Ghost = (function() {
       directory: {},
       buffers: []
     });
-  };
-
-  Ghost.createRequest = function(method, event) {
-    var request;
-    request = new ShioriJK.Message.Request();
-    request.request_line.method = method;
-    request.request_line.protocol = "SHIORI";
-    request.request_line.version = "3.0";
-    Object.keys(event).forEach(function(key) {
-      return request.headers.set(key, ev[key]);
-    });
-    return "" + request;
-  };
-
-  Ghost.parseResponse = function(response) {
-    response = new ShioriJK.Shiori.Response.Parser();
-    response.parse(response);
-    return response;
   };
 
   return Ghost;

@@ -6,16 +6,15 @@ declare class Ghost {
   unload(callback: (error: any) => void): void; // stable
   descript: { [key: string]: string; }; // stable
   tree: any; // unstable
-  shioriWorker: WebWorker;
+  worker: Worker; // unstable
 }
 
 
 declare module Ghost {
-  function initShioriWorker(src: string, tree: any, callback: (error: any)=> void): WebWorker;
-  function unzipAll(tree: any): {directory: any; buffers: ArrayBuffer[]};
+  function createTransferable(tree: any): {directory: any; buffers: ArrayBuffer[]; };
   function detectShiori(buffer: ArrayBuffer): string; // unstable
-  function createRequest(method, event: { [key: string]: string; };): string; // unstable
-  function parseResponse(response: string;): { [key: string]: string; }; // unstable
+  function createRequest(method, event: { [key: string]: string; }): string; // unstable
+  function parseResponse(response: string): { [key: string]: string; }; // unstable
 }
 
 declare module 'ghost' {

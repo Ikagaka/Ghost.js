@@ -1,9 +1,8 @@
 
 
 class Ghost
-
+  _ = window["_"]
   Nar = window["Nar"]
-  ShioriJK = window["ShioriJK"]
   Worker = window["Worker"]
 
   constructor: (tree)->
@@ -22,7 +21,7 @@ class Ghost
       when "kawari" then return callback(new Error("unsupport shiori"))
       when "miyojs" then @worker = new Worker("./ShioriWorker-MiyoJS.js")
       else               return callback(new Error("cannot detect shiori type: "+ @descript["shiori"]))
-    console.log {directory, buffers} = Ghost.createTransferable(@tree)
+    {directory, buffers} = Ghost.createTransferable(@tree)
     @worker.postMessage({event: "load", data: directory}, buffers)
     @worker.onmessage = ({data: {event, error}})->
       if event is "loaded" then callback(error)
@@ -45,24 +44,14 @@ class Ghost
 
   @createTransferable: (tree)->
     Object.keys(tree).reduce((({directory, buffers}, filename)->
-      if !!tree[filename] and tree[filename].dir instanceof Boolean
-        console.log tree[filename]
-        buffer = tree[filename].asArrayBuffer()
-        buffers.push(buffer)
-        directory[filename] = buffer
+      if !!filename and !!tree[filename]
+        if typeof tree[filename].dir is "boolean"
+          buffer = tree[filename].asArrayBuffer()
+          buffers.push(buffer)
+          directory[filename] = buffer
+        else
+          {directory: _directory, buffers: _buffers} = Ghost.createTransferable(tree[filename])
+          directory[filename] = _directory
+          buffers = buffers.concat(_buffers)
       {directory, buffers}
     ), {directory: {}, buffers: []})
-
-  @createRequest = (method, event)->
-    request = new ShioriJK.Message.Request()
-    request.request_line.method = method
-    request.request_line.protocol = "SHIORI"
-    request.request_line.version = "3.0"
-    Object.keys(event).forEach (key)->
-      request.headers.set(key, ev[key])
-    ""+request
-
-  @parseResponse = (response)->
-    response = new ShioriJK.Shiori.Response.Parser()
-    response.parse(response)
-    response
