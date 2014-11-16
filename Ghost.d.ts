@@ -1,3 +1,5 @@
+interface JSZipDirectory { [filepath: string]: JSZipObject; };
+interface Descript { [key: string]: string; };
 
 declare class Ghost {
   constructor(directory: JSZipDirectory); // stable
