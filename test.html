@@ -10,7 +10,7 @@
 <script>
 var nar = new Nar();
 //nar.loadFromURL("./vender/TempleteKarin.nar", function (err){
-nar.loadFromURL("./vender/net.narazaka.miyopreview.nar", function (err){
+nar.loadFromURL("./vender/net.narazaka.miyoforwebbw.nar", function (err){
   if(!!err) return console.error(err.stack);
 
   if(nar.install.type === "ghost"){
@@ -30,11 +30,38 @@ nar.loadFromURL("./vender/net.narazaka.miyopreview.nar", function (err){
 
     console.log(ghost);
 
-    ghost.request("GET SHIORI/3.0\r\nID: OnBoot\r\nSender: embryo\r\nCharset: Shift_JIS\r\nReference0: 0\r\n\r\n", function(err, response){
+    var request_callback = function(err, response){
       if(!!err) return console.error(err.stack);
 
       console.log(response);
-    });
+    };
+    var standing = true;
+    ghost.request("GET SHIORI/3.0\r\nID: OnBoot\r\nSender: embryo\r\nCharset: Shift_JIS\r\nReference0: 0\r\n\r\n", request_callback);
+    var OnSecondChange;
+    OnSecondChange = function (){
+      if(standing){
+        ghost.request("GET SHIORI/3.0\r\nID: OnSecondChange\r\nSender: embryo\r\nCharset: Shift_JIS\r\nReference0: 0\r\nReference1: 0\r\nReference2: 0\r\nReference3: 1\r\n\r\n", request_callback);
+        setTimeout(OnSecondChange, 1000);
+      }
+    };
+    setTimeout(OnSecondChange, 1000);
+    var talk_interval = function(){
+      ghost.request("GET SHIORI/3.0\r\nID: OnSetting.talk_interval\r\nSender: embryo\r\nCharset: Shift_JIS\r\n\r\n", request_callback);
+    };
+    setTimeout(talk_interval, 2000);
+    var talk_interval_set_30 = function(){
+      ghost.request("GET SHIORI/3.0\r\nID: OnSetting.talk_interval.set.30\r\nSender: embryo\r\nCharset: Shift_JIS\r\n\r\n", request_callback);
+    };
+    setTimeout(talk_interval_set_30, 3500);
+    var OnClose = function(){
+      ghost.request("GET SHIORI/3.0\r\nID: OnClose\r\nSender: embryo\r\nCharset: Shift_JIS\r\n\r\n", request_callback);
+      standing = false;
+      ghost.unload(function(err){
+        if(!!err) return console.error(err.stack);
+        console.log("finish");
+      });
+    };
+    setTimeout(OnClose, 180 * 1000);
 
   });
 });

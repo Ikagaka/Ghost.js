@@ -1,6 +1,9 @@
 
 self.importScripts("node_modules/ikagaka.nar.js/node_modules/encoding-japanese/encoding.js")
 self.importScripts("node_modules/shiorijk/lib/shiorijk.js")
+self.importScripts("vender/coffee-script.js")
+self.importScripts("node_modules/parttime/parttime.js")
+self.importScripts("node_modules/partperiod/partperiod.js")
 self.importScripts("node_modules/miyojs-filter-conditions/conditions.js")
 self.importScripts("node_modules/miyojs-filter-default_response_headers/default_response_headers.js")
 self.importScripts("node_modules/miyojs-filter-join/join.js")
@@ -49,7 +52,7 @@ self.onmessage = ({data: {event, data}})->
       console.log(request)
       shiori.request(request)
       .then (response) ->
-        self.postMessage({event: "response", error: null, data: response})
+        self.postMessage({event: "response", error: null, data: '' + response})
       .catch (error) ->
         console.warn(error)
     when "unload"
