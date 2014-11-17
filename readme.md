@@ -1,5 +1,6 @@
-Ghost.js
-======================
+# Ghost.js
+
+## usage
 
 [wiki](https://github.com/Ikagaka/Ghost.js/wiki/Ghost.js )
 
@@ -19,11 +20,8 @@ nar.loadFromURL("./vender/TempleteKarin.nar", function (err){
   if(!!err) return console.error(err.stack);
 
   if(nar.install.type === "ghost"){
-    var ghostDir = Object
-      .keys(nar.directory)
-      .filter(function(path){ return /ghost\/master\//.test(path); })
-      .reduce(function(dir, path, zip){ dir[path.replace(/ghost\/master\//, "")] = nar.directory[path]; return dir; }, {})
-    var ghost = new Ghost(ghostDir)
+    var ghostDir = nar.getDirectory(/ghost\/master\//);
+    var ghost = new Ghost(ghostDir);
   }else{
     throw new Error("wrong nar file")
   }
@@ -35,7 +33,13 @@ nar.loadFromURL("./vender/TempleteKarin.nar", function (err){
 
     console.log(ghost);
 
-    ghost.request("GET SHIORI/3.0\r\nID: OnBoot\r\nSender: embryo\r\nCharset: Shift_JIS\r\nReference0: 0\r\n\r\n", function(err, response){
+    ghost.request([
+      "GET SHIORI/3.0",
+      "ID: OnBoot",
+      "Sender: embryo",
+      "Charset: Shift_JIS",
+      "Reference0: 0",
+      "\r\n"].join("\r\n"), function(err, response){
       if(!!err) return console.error(err.stack);
 
       console.log(response);

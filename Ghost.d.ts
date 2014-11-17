@@ -1,4 +1,4 @@
-interface JSZipDirectory { [filepath: string]: JSZipObject; };
+interface JSZipDirectory { [filePath: string]: JSZipObject; };
 interface Descript { [key: string]: string; };
 
 declare class Ghost {
