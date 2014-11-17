@@ -6,6 +6,12 @@
 
   self.importScripts("node_modules/shiorijk/lib/shiorijk.js");
 
+  self.importScripts("vender/coffee-script.js");
+
+  self.importScripts("node_modules/parttime/parttime.js");
+
+  self.importScripts("node_modules/partperiod/partperiod.js");
+
   self.importScripts("node_modules/miyojs-filter-conditions/conditions.js");
 
   self.importScripts("node_modules/miyojs-filter-default_response_headers/default_response_headers.js");
@@ -76,7 +82,7 @@
           return self.postMessage({
             event: "response",
             error: null,
-            data: response
+            data: '' + response
           });
         })["catch"](function(error) {
           return console.warn(error);
