@@ -3,13 +3,14 @@
 <script src="./node_modules/ikagaka.nar.js/vender/XHRProxy.min.js"></script>
 <script src="./node_modules/ikagaka.nar.js/vender/WMDescript.js"></script>
 <script src="./node_modules/ikagaka.nar.js/Nar.js"></script>
-<script src="./node_modules/ikagaka.shell.js/vender/zepto.min.js"></script>
+<script src="./node_modules/ikagaka.shell.js/node_modules/zepto/zepto.min.js"></script>
 <script src="./node_modules/ikagaka.shell.js/SurfaceUtil.js"></script>
 <script src="./node_modules/underscore/underscore-min.js"></script>
 <script src="./Ghost.js"></script>
 <script>
 var nar = new Nar();
-nar.loadFromURL("./vender/TempleteKarin.nar", function (err){
+//nar.loadFromURL("./vender/TempleteKarin.nar", function (err){
+nar.loadFromURL("./vender/net.narazaka.miyopreview.nar", function (err){
   if(!!err) return console.error(err.stack);
 
   if(nar.install.type === "ghost"){
