@@ -1,7 +1,7 @@
 
 self.importScripts("node_modules/ikagaka.nar.js/node_modules/encoding-japanese/encoding.js")
 self.importScripts("node_modules/shiorijk/lib/shiorijk.js")
-self.importScripts("vender/kawari.so.min.js")
+self.importScripts("vender/kawari.js")
 self.importScripts("vender/kawarishiori.js")
 
 shiori = new KawariShiori()
