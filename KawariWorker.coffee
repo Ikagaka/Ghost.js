@@ -14,9 +14,14 @@ self.onmessage = ({data: {event, data}})->
     when "load"
       directory = data
       for filepath in Object.keys(directory)
-        if /\/$/.test(filepath)
-        then FS.mkdir("/home/web_user/"+filepath.replace(/\/$/, ""))
-        else
+        dirname = filepath.replace(/[^\/]*$/, '')
+        # ディレクトリより先にファイルがzipから読まれた場合、パスのdirがなかったらつくるようにしたが、いきなり深いパスがくるとたぶん無理な手抜き仕様
+        try
+          FS.stat("/home/web_user/"+dirname)
+        catch error
+          console.log 'mkdir '+"/home/web_user/"+dirname
+          FS.mkdir("/home/web_user/"+dirname.replace(/\/$/, ""))
+        unless /\/$/.test(filepath)
           uint8arr = new Uint8Array(directory[filepath])
           console.log "/home/web_user/" + filepath, uint8arr.length
           FS.writeFile("/home/web_user/" + filepath, uint8arr, {encoding: 'binary'})
