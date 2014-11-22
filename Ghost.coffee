@@ -17,7 +17,7 @@ class Ghost
   load: (callback)->
     if !@directory[@descript["shiori"]] and !@directory["shiori.dll"] then return callback(new Error("shiori not found"))
     switch Ghost.detectShiori(@directory)
-      when "satori" then return callback(new Error("unsupport shiori"))
+      when "satori" then @worker = new Worker("./SatoriWorker.js")
       when "yaya"   then return callback(new Error("unsupport shiori"))
       when "kawari" then @worker = new Worker("./KawariWorker.js")
       when "miyojs" then @worker = new Worker("./MiyoJSWorker.js")
