@@ -10,10 +10,8 @@
   },
   "dependencies": {
     "ikagaka.nar.js": "",
-    "ikagaka.shell.js": "",
     "shiorijk": "",
     "miyojs": "",
-    "underscore": "",
     "parttime": "",
     "partperiod": "",
     "miyojs-filter-conditions": "^1.0.0",
