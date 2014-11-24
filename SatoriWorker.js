@@ -18,7 +18,7 @@ FS = shiori.FS;
 Module['logReadFiles'] = true;
 
 self.onmessage = function(_arg) {
-  var data, directory, dirname, error, event, filepath, request, response, uint8arr, _i, _len, _ref, _ref1;
+  var data, directory, dirname, error, event, filepath, filestr, request, response, uint8arr, _i, _len, _ref, _ref1;
   _ref = _arg.data, event = _ref.event, data = _ref.data;
   switch (event) {
     case "load":
@@ -37,6 +37,11 @@ self.onmessage = function(_arg) {
         if (!/\/$/.test(filepath)) {
           uint8arr = new Uint8Array(directory[filepath]);
           console.log("/home/web_user/" + filepath, uint8arr.length);
+          if (/\bsatori_conf\.txt$/.test(filepath)) {
+            filestr = Encoding.codeToString(Encoding.convert(uint8arr, 'UNICODE', 'SJIS'));
+            filestr = filestr.replace(/＠SAORI/, '＠NO__SAORI');
+            uint8arr = Encoding.convert(Encoding.stringToCode(filestr), 'SJIS', 'UNICODE');
+          }
           FS.writeFile("/home/web_user/" + filepath, uint8arr, {
             encoding: 'binary'
           });

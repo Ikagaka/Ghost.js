@@ -24,6 +24,10 @@ self.onmessage = ({data: {event, data}})->
         unless /\/$/.test(filepath)
           uint8arr = new Uint8Array(directory[filepath])
           console.log "/home/web_user/" + filepath, uint8arr.length
+          if /\bsatori_conf\.txt$/.test(filepath)
+            filestr = Encoding.codeToString(Encoding.convert(uint8arr, 'UNICODE', 'SJIS'))
+            filestr = filestr.replace(/＠SAORI/, '＠NO__SAORI')
+            uint8arr = Encoding.convert(Encoding.stringToCode(filestr), 'SJIS', 'UNICODE')
           FS.writeFile("/home/web_user/" + filepath, uint8arr, {encoding: 'binary'})
       FS.chdir('/home/web_user')
       console.log shiori.load("/home/web_user/")
