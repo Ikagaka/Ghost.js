@@ -35,7 +35,6 @@
     "miyojs-filter-child_process": ">= 0.0.1"
   },
   "devDependencies": {
-    "uupaa.watch.js": ""
   },
   "main":           "./Ghost.js",
   "author":         "duxca",
