@@ -23,36 +23,39 @@ Ghost = (function() {
     this.worker = null;
   }
 
+  Ghost.prototype.path = "./";
+
   Ghost.prototype.load = function(callback) {
     var buffers, directory, _ref;
     if (!this.directory[this.descript["shiori"]] && !this.directory["shiori.dll"]) {
       return callback(new Error("shiori not found"));
     }
+    console.log(this.path);
     switch (Ghost.detectShiori(this.directory)) {
       case "kawari":
-        this.worker = new Worker("./KawariWorker.js");
+        this.worker = new Worker(this.path + "KawariWorker.js");
         break;
       case "kawari7":
-        this.worker = new Worker("./Kawari7Worker.js");
+        this.worker = new Worker(this.path + "Kawari7Worker.js");
         break;
       case "satori":
-        this.worker = new Worker("./SatoriWorker.js");
+        this.worker = new Worker(this.path + "SatoriWorker.js");
         break;
       case "yaya":
-        this.worker = new Worker("./YAYAWorker.js");
+        this.worker = new Worker(this.path + "YAYAWorker.js");
         break;
       case "aya5":
-        this.worker = new Worker("./AYA5Worker.js");
+        this.worker = new Worker(this.path + "AYA5Worker.js");
         break;
       case "miyojs":
-        this.worker = new Worker("./MiyoJSWorker.js");
+        this.worker = new Worker(this.path + "MiyoJSWorker.js");
         break;
       default:
         return callback(new Error("cannot detect shiori type: " + this.descript["shiori"]));
     }
     _ref = Ghost.createTransferable(this.directory), directory = _ref.directory, buffers = _ref.buffers;
     this.worker.addEventListener("error", function(ev) {
-      return console.error(ev.error.stack);
+      return console.error(ev.error);
     });
     this.worker.postMessage({
       event: "load",

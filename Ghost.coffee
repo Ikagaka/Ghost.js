@@ -16,18 +16,21 @@ class Ghost
     @descript = Nar.parseDescript(descriptTxt)
     @worker = null
 
+  path: "./"
+  
   load: (callback)->
     if !@directory[@descript["shiori"]] and !@directory["shiori.dll"] then return callback(new Error("shiori not found"))
+    console.log @path
     switch Ghost.detectShiori(@directory)
-      when "kawari"  then @worker = new Worker("./KawariWorker.js")
-      when "kawari7" then @worker = new Worker("./Kawari7Worker.js")
-      when "satori"  then @worker = new Worker("./SatoriWorker.js")
-      when "yaya"    then @worker = new Worker("./YAYAWorker.js")
-      when "aya5"    then @worker = new Worker("./AYA5Worker.js")
-      when "miyojs"  then @worker = new Worker("./MiyoJSWorker.js")
+      when "kawari"  then @worker = new Worker(@path + "KawariWorker.js")
+      when "kawari7" then @worker = new Worker(@path + "Kawari7Worker.js")
+      when "satori"  then @worker = new Worker(@path + "SatoriWorker.js")
+      when "yaya"    then @worker = new Worker(@path + "YAYAWorker.js")
+      when "aya5"    then @worker = new Worker(@path + "AYA5Worker.js")
+      when "miyojs"  then @worker = new Worker(@path + "MiyoJSWorker.js")
       else return callback(new Error("cannot detect shiori type: "+ @descript["shiori"]))
     {directory, buffers} = Ghost.createTransferable(@directory)
-    @worker.addEventListener "error", (ev)-> console.error(ev.error.stack)
+    @worker.addEventListener "error", (ev)-> console.error(ev.error)
     @worker.postMessage({event: "load", data: directory}, buffers)
     @worker.onmessage = ({data: {event, error}})->
       if event is "loaded" then callback(error)
