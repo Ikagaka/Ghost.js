@@ -6,7 +6,7 @@ Ghost = (function() {
 
   _ = window["_"];
 
-  Nar = window["Nar"];
+  Nar = window["Nar"] || window["Ikagaka"]["Nar"];
 
   Worker = window["Worker"];
 

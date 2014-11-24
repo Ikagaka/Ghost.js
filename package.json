@@ -5,7 +5,7 @@
   "url":            "https://github.com/ikagaka/Ghost.js",
   "keywords":       ["nar", "ikagaka", "unstable", "ukagaka"],
   "scripts": {
-    "watch": "node node_modules/uupaa.watch.js --verbose --action build ./*.coffee",
+    "watch": "coffee -cbw ./*.coffee",
     "build": "coffee -cb ./*.coffee"
   },
   "repository": {
