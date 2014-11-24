@@ -25,6 +25,7 @@ class Ghost
       when "miyojs"  then @worker = new Worker("./MiyoJSWorker.js")
       else return callback(new Error("cannot detect shiori type: "+ @descript["shiori"]))
     {directory, buffers} = Ghost.createTransferable(@directory)
+    @worker.addEventListener "error", (ev)-> console.error(ev.error.stack)
     @worker.postMessage({event: "load", data: directory}, buffers)
     @worker.onmessage = ({data: {event, error}})->
       if event is "loaded" then callback(error)
@@ -44,7 +45,7 @@ class Ghost
 
   @detectShiori = (directory)->
     if !!directory["kawarirc.kis"]    then return "kawari"
-    if !!directory["kawari.ini"]    then return "kawari7" # no kis and ini
+    if !!directory["kawari.ini"]      then return "kawari7" # no kis and ini
     if !!directory["satori_conf.txt"] then return "satori"
     if !!directory["yaya.dll"]        then return "yaya"
     if !!directory["aya5.dll"]        then return "aya5"
@@ -61,3 +62,9 @@ class Ghost
         buffers.push(buffer)
         {directory, buffers}
       ), {directory: {}, buffers: []})
+
+if module?.exports?
+  module.exports = Ghost
+
+if window["Ikagaka"]?
+  window["Ikagaka"]["Ghost"] = Ghost

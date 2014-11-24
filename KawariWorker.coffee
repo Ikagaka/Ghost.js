@@ -1,5 +1,5 @@
 
-self.importScripts("node_modules/ikagaka.nar.js/node_modules/encoding-japanese/encoding.js")
+self.importScripts("node_modules/encoding-japanese/encoding.js")
 self.importScripts("node_modules/shiorijk/lib/shiorijk.js")
 self.importScripts("vender/kawari.js")
 self.importScripts("vender/kawarishiori.js")
@@ -18,7 +18,7 @@ self.onmessage = ({data: {event, data}})->
         # ディレクトリより先にファイルがzipから読まれた場合、パスのdirがなかったらつくるようにしたが、いきなり深いパスがくるとたぶん無理な手抜き仕様
         try
           FS.stat("/home/web_user/"+dirname)
-        catch error
+        catch err
           console.log 'mkdir '+"/home/web_user/"+dirname
           FS.mkdir("/home/web_user/"+dirname.replace(/\/$/, ""))
         unless /\/$/.test(filepath)
