@@ -17,11 +17,12 @@ class Ghost
   load: (callback)->
     if !@directory[@descript["shiori"]] and !@directory["shiori.dll"] then return callback(new Error("shiori not found"))
     switch Ghost.detectShiori(@directory)
-      when "satori" then @worker = new Worker("./SatoriWorker.js")
-      when "yaya"   then @worker = new Worker("./YAYAWorker.js")
-      when "aya5"   then @worker = new Worker("./AYA5Worker.js")
-      when "kawari" then @worker = new Worker("./KawariWorker.js")
-      when "miyojs" then @worker = new Worker("./MiyoJSWorker.js")
+      when "kawari"  then @worker = new Worker("./KawariWorker.js")
+      when "kawari7" then @worker = new Worker("./Kawari7Worker.js")
+      when "satori"  then @worker = new Worker("./SatoriWorker.js")
+      when "yaya"    then @worker = new Worker("./YAYAWorker.js")
+      when "aya5"    then @worker = new Worker("./AYA5Worker.js")
+      when "miyojs"  then @worker = new Worker("./MiyoJSWorker.js")
       else return callback(new Error("cannot detect shiori type: "+ @descript["shiori"]))
     {directory, buffers} = Ghost.createTransferable(@directory)
     @worker.postMessage({event: "load", data: directory}, buffers)
@@ -43,6 +44,7 @@ class Ghost
 
   @detectShiori = (directory)->
     if !!directory["kawarirc.kis"]    then return "kawari"
+    if !!directory["kawari.ini"]    then return "kawari7" # no kis and ini
     if !!directory["satori_conf.txt"] then return "satori"
     if !!directory["yaya.dll"]        then return "yaya"
     if !!directory["aya5.dll"]        then return "aya5"
