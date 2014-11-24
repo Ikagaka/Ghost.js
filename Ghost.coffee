@@ -3,7 +3,7 @@
 class Ghost
   _ = window["_"]
 
-  Nar = window["Nar"] || window["Ikagaka"]["Nar"]
+  Nar = window["Nar"] || window["Ikagaka"]["Nar"] || require("ikagaka.nar.js")
 
   Worker = window["Worker"]
 
