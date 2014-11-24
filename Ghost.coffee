@@ -2,7 +2,9 @@
 
 class Ghost
   _ = window["_"]
-  Nar = window["Nar"]
+
+  Nar = window["Nar"] || window["Ikagaka"]["Nar"]
+
   Worker = window["Worker"]
 
   constructor: (directory)->
