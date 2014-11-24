@@ -1,6 +1,6 @@
 {
   "name":           "ikagaka.ghost.js",
-  "version":        "0.2.5",
+  "version":        "0.2.6",
   "description":    "Ikagaka Shiori Wrapper",
   "url":            "https://github.com/ikagaka/Ghost.js",
   "keywords":       ["nar", "ikagaka", "unstable", "ukagaka"],
@@ -40,5 +40,5 @@
   "main":           "./Ghost.js",
   "author":         "duxca",
   "license":        "MIT",
-  "contributors":   []
+  "contributors":   ["narazaka"]
 }
