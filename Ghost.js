@@ -25,6 +25,8 @@ Ghost = (function() {
 
   Ghost.prototype.path = "./";
 
+  Ghost.prototype.logging = false;
+
   Ghost.prototype.load = function(callback) {
     var buffers, directory, _ref;
     if (!this.directory[this.descript["shiori"]] && !this.directory["shiori.dll"]) {
@@ -72,17 +74,25 @@ Ghost = (function() {
   };
 
   Ghost.prototype.request = function(request, callback) {
+    if (this.logging) {
+      console.log(request);
+    }
     this.worker.postMessage({
       event: "request",
       data: request
     });
-    this.worker.onmessage = function(_arg) {
-      var error, event, response, _ref;
-      _ref = _arg.data, event = _ref.event, error = _ref.error, response = _ref.data;
-      if (event === "response") {
-        return callback(error, response);
-      }
-    };
+    this.worker.onmessage = (function(_this) {
+      return function(_arg) {
+        var error, event, response, _ref;
+        _ref = _arg.data, event = _ref.event, error = _ref.error, response = _ref.data;
+        if (_this.logging) {
+          console.log(response);
+        }
+        if (event === "response") {
+          return callback(error, response);
+        }
+      };
+    })(this);
     return void 0;
   };
 

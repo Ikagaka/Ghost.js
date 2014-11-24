@@ -76,7 +76,6 @@ self.onmessage = function(_arg) {
       requestTxt = data;
       parser = new ShioriJK.Shiori.Request.Parser();
       request = parser.parse(requestTxt);
-      console.log(request);
       return shiori.request(request).then(function(response) {
         return self.postMessage({
           event: "response",

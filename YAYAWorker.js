@@ -48,9 +48,7 @@ self.onmessage = function(_arg) {
       });
     case "request":
       request = data;
-      console.log(request);
       response = shiori.request(request);
-      console.log(response);
       return self.postMessage({
         event: "response",
         error: null,

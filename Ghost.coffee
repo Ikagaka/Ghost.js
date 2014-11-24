@@ -17,7 +17,8 @@ class Ghost
     @worker = null
 
   path: "./"
-  
+  logging: false
+
   load: (callback)->
     if !@directory[@descript["shiori"]] and !@directory["shiori.dll"] then return callback(new Error("shiori not found"))
     console.log @path
@@ -37,8 +38,10 @@ class Ghost
     undefined
 
   request: (request, callback)->
+    if @logging then console.log(request)
     @worker.postMessage({event: "request", data: request})
-    @worker.onmessage = ({data:{event, error, data: response}})->
+    @worker.onmessage = ({data:{event, error, data: response}})=>
+      if @logging then console.log(response)
       if event is "response" then callback(error, response)
     undefined
 

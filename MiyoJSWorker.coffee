@@ -49,7 +49,7 @@ self.onmessage = ({data: {event, data}})->
       requestTxt = data
       parser = new ShioriJK.Shiori.Request.Parser()
       request = parser.parse(requestTxt)
-      console.log(request)
+      #console.log(request)
       shiori.request(request)
       .then (response) ->
         self.postMessage({event: "response", error: null, data: '' + response})

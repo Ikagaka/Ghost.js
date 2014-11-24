@@ -35,9 +35,9 @@ self.onmessage = ({data: {event, data}})->
       self.postMessage({"event": "loaded", "error": null})
     when "request"
       request = data
-      console.log request
+      #console.log request
       response = shiori.request(request)
-      console.log response
+      #console.log response
       self.postMessage({event: "response", error: null, data: response})
     when "unload"
       console.log shiori.unload()
