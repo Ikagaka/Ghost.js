@@ -1,6 +1,6 @@
 
-self.importScripts("node_modules/encoding-japanese/encoding.js")
-self.importScripts("node_modules/shiorijk/lib/shiorijk.js")
+self.importScripts("vender/encoding.min.js")
+self.importScripts("vender/shiorijk.js")
 self.importScripts("vender/coffee-script.js")
 self.importScripts("node_modules/parttime/parttime.js")
 self.importScripts("node_modules/partperiod/partperiod.js")
@@ -47,8 +47,8 @@ self.onmessage = ({data: {event, data}})->
         console.warn(error)
     when "request"
       requestTxt = data
-      paser = new ShioriJK.Shiori.Request.Parser()
-      request = paser.parse(requestTxt)
+      parser = new ShioriJK.Shiori.Request.Parser()
+      request = parser.parse(requestTxt)
       console.log(request)
       shiori.request(request)
       .then (response) ->

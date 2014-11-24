@@ -1,6 +1,5 @@
 
-self.importScripts("node_modules/encoding-japanese/encoding.js")
-self.importScripts("node_modules/shiorijk/lib/shiorijk.js")
+self.importScripts("vender/encoding.min.js")
 self.importScripts("vender/kawari.js")
 self.importScripts("vender/kawarishiori.js")
 

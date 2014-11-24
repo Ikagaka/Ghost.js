@@ -1,7 +1,7 @@
 {
   "name":           "ikagaka.ghost.js",
-  "version":        "0.2.4",
-  "description":    "",
+  "version":        "0.2.5",
+  "description":    "Ikagaka Shiori Wrapper",
   "url":            "https://github.com/ikagaka/Ghost.js",
   "keywords":       ["nar", "ikagaka", "unstable", "ukagaka"],
   "scripts": {
@@ -15,6 +15,7 @@
   "dependencies": {
     "ikagaka.nar.js": "",
     "encoding-japanese": "",
+    "coffee-script": "",
     "shiorijk": "",
     "miyojs": "",
     "parttime": "",
