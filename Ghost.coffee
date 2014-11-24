@@ -19,6 +19,7 @@ class Ghost
     switch Ghost.detectShiori(@directory)
       when "satori" then @worker = new Worker("./SatoriWorker.js")
       when "yaya"   then @worker = new Worker("./YAYAWorker.js")
+      when "aya5"   then @worker = new Worker("./AYA5Worker.js")
       when "kawari" then @worker = new Worker("./KawariWorker.js")
       when "miyojs" then @worker = new Worker("./MiyoJSWorker.js")
       else return callback(new Error("cannot detect shiori type: "+ @descript["shiori"]))
@@ -44,6 +45,7 @@ class Ghost
     if !!directory["kawarirc.kis"]    then return "kawari"
     if !!directory["satori_conf.txt"] then return "satori"
     if !!directory["yaya.dll"]        then return "yaya"
+    if !!directory["aya5.dll"]        then return "aya5"
     if !!directory["node.exe"]        then return "miyojs"
     return ""
 
