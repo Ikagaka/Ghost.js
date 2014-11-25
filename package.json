@@ -38,7 +38,7 @@
   "devDependencies": {
   },
   "main":           "./Ghost.js",
-  "author":         "duxca",
+  "author":         "Ikagaka",
   "license":        "MIT",
-  "contributors":   ["narazaka"]
+  "contributors":   ["narazaka", "legokichi"]
 }
