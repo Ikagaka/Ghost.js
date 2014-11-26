@@ -11,8 +11,10 @@
 <script src="./Ghost.js"></script>
 <script>
 var nar = new Nar();
-//nar.loadFromURL("./vender/TempleteKarin.nar", function (err){
-nar.loadFromURL("./vender/net.narazaka.miyoforwebbw.nar", function (err){
+//nar.loadFromURL("./vender/Ageha.nar", function (err){ // kawari
+//nar.loadFromURL("./vender/R_POST_and_KOMAINU.nar", function (err){ // satori
+//nar.loadFromURL("./vender/konnoyayame.nar", function (err){ // yaya
+nar.loadFromURL("./vender/net.narazaka.miyoforwebbw.nar", function (err){ // miyojs
   if(!!err) return console.error(err.stack);
 
   if(nar.install.type === "ghost"){
