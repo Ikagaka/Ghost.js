@@ -16,11 +16,18 @@
 + craftman,narazaka
 + http://narazaka.net/c/ukagaka/
 
-## kawari
-+ http://kawari.sourceforge.net/
+## libsatori.js
++ https://github.com/Narazaka/libsatori.js
 
-## satori
-+ http://ms.shillest.net/satoriya.xhtml
+## kawari7.js
++ https://github.com/Narazaka/kawari7.js
 
-## yaya
-+ http://ms.shillest.net/yaya.xhtml
+## kawari.js
++ https://github.com/Narazaka/kawari.js
+
+## yaya.js
++ https://github.com/Narazaka/yaya.js
+
+## aya5.js
++ https://github.com/Narazaka/aya5.js
+
