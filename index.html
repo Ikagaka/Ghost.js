@@ -12,9 +12,9 @@
 <script>
 var nar = new Nar();
 //nar.loadFromURL("./vender/Ageha.nar", function (err){ // kawari
-//nar.loadFromURL("./vender/R_POST_and_KOMAINU.nar", function (err){ // satori
+nar.loadFromURL("./vender/R_POST_and_KOMAINU.nar", function (err){ // satori
 //nar.loadFromURL("./vender/konnoyayame.nar", function (err){ // yaya
-nar.loadFromURL("./vender/net.narazaka.miyoforwebbw.nar", function (err){ // miyojs
+//nar.loadFromURL("./vender/net.narazaka.miyoforwebbw.nar", function (err){ // miyojs
   if(!!err) return console.error(err.stack);
 
   if(nar.install.type === "ghost"){
@@ -28,7 +28,7 @@ nar.loadFromURL("./vender/net.narazaka.miyoforwebbw.nar", function (err){ // miy
   }
 
   Error.stackTraceLimit = Infinity;
-  ghost.path = "./";
+  ghost.path = './vender/';
   ghost.logging = true;
 
   ghost.load(function(err){

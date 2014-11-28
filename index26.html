@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Ghost.js</title>
-<script src="./node_modules/ikagaka.nar.js/node_modules/encoding-japanese/encoding.js"></script>
+<script src="./node_modules/encoding-japanese/encoding.js"></script>
 <script src="./node_modules/ikagaka.nar.js/vender/jszip.min.js"></script>
 <script src="./node_modules/ikagaka.nar.js/vender/XHRProxy.min.js"></script>
 <script src="./node_modules/ikagaka.nar.js/vender/WMDescript.js"></script>
@@ -25,6 +25,8 @@ nar.loadFromURL("./vender/dot_sakura_020_060506a.nar", function (err){
   }
 
   Error.stackTraceLimit = Infinity;
+  ghost.path = './vender/';
+  ghost.logging = true;
 
   ghost.load(function(err){
     if(!!err) return console.error(err.stack);
