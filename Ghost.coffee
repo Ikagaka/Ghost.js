@@ -28,7 +28,9 @@ class Ghost
       when "satori"  then @worker = new Worker(@path + "SatoriWorker.js")
       when "yaya"    then @worker = new Worker(@path + "YAYAWorker.js")
       when "aya5"    then @worker = new Worker(@path + "AYA5Worker.js")
-      when "miyojs"  then @worker = new Worker(@path + "MiyoJSWorker.js")
+      when "aya"     then return callback(new Error("unsupport shiori"))
+      when "miyojs"  then return callback(new Error("unsupport shiori"))
+      when "misaka"  then return callback(new Error("unsupport shiori"))
       else return callback(new Error("cannot detect shiori type: "+ @descript["shiori"]))
     {directory, buffers} = Ghost.createTransferable(@directory)
     @worker.addEventListener "error", (ev)-> console.error(ev.error)
@@ -57,7 +59,9 @@ class Ghost
     if !!directory["satori_conf.txt"] then return "satori"
     if !!directory["yaya.dll"]        then return "yaya"
     if !!directory["aya5.dll"]        then return "aya5"
+    if !!directory["aya.dll"]         then return "aya"
     if !!directory["node.exe"]        then return "miyojs"
+    if !!directory["misaka.dll"]      then return "misaka"
     return ""
 
 

@@ -49,9 +49,12 @@ Ghost = (function() {
       case "aya5":
         this.worker = new Worker(this.path + "AYA5Worker.js");
         break;
+      case "aya":
+        return callback(new Error("unsupport shiori"));
       case "miyojs":
-        this.worker = new Worker(this.path + "MiyoJSWorker.js");
-        break;
+        return callback(new Error("unsupport shiori"));
+      case "misaka":
+        return callback(new Error("unsupport shiori"));
       default:
         return callback(new Error("cannot detect shiori type: " + this.descript["shiori"]));
     }
@@ -126,8 +129,14 @@ Ghost = (function() {
     if (!!directory["aya5.dll"]) {
       return "aya5";
     }
+    if (!!directory["aya.dll"]) {
+      return "aya";
+    }
     if (!!directory["node.exe"]) {
       return "miyojs";
+    }
+    if (!!directory["misaka.dll"]) {
+      return "misaka";
     }
     return "";
   };
