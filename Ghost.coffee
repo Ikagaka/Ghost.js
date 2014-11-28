@@ -56,7 +56,7 @@ class Ghost
   @detectShiori = (directory)->
     if !!directory["kawarirc.kis"]    then return "kawari"
     if !!directory["kawari.ini"]      then return "kawari7" # no kis and ini
-    if !!directory["satori_conf.txt"] then return "satori"
+    if !!directory["satori.dll"]      then return "satori"
     if !!directory["yaya.dll"]        then return "yaya"
     if !!directory["aya5.dll"]        then return "aya5"
     if !!directory["aya.dll"]         then return "aya"
