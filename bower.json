@@ -11,7 +11,7 @@
 		"aya5.js": "",
 		"ikagaka.nar.js": "Ikagaka/Nar.js"
 	},
-	"main": ["Ghost.js", "KawariWorker.js", "Kawari7Worker.js", "SatoriWorker.js", "YAYAWorker.js", "AYA5Worker.js"],
+	"main": ["Ghost.js"],
 	"ignore": [
 		"**/.*",
 		"bower_components",
