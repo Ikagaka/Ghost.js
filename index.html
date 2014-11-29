@@ -4,17 +4,16 @@
 <meta charset="UTF-8">
 <title>Ghost.js</title>
 <script src="./node_modules/encoding-japanese/encoding.js"></script>
-<script src="./node_modules/ikagaka.nar.js/vender/jszip.min.js"></script>
-<script src="./node_modules/ikagaka.nar.js/vender/XHRProxy.min.js"></script>
-<script src="./node_modules/ikagaka.nar.js/vender/WMDescript.js"></script>
+<script src="./node_modules/ikagaka.nar.js/vendor/jszip.min.js"></script>
+<script src="./node_modules/ikagaka.nar.js/vendor/XHRProxy.min.js"></script>
+<script src="./node_modules/ikagaka.nar.js/vendor/WMDescript.js"></script>
 <script src="./node_modules/ikagaka.nar.js/Nar.js"></script>
 <script src="./Ghost.js"></script>
 <script>
-var nar = new Nar();
-//nar.loadFromURL("./vender/Ageha.nar", function (err){ // kawari
-nar.loadFromURL("./vender/R_POST_and_KOMAINU.nar", function (err){ // satori
-//nar.loadFromURL("./vender/konnoyayame.nar", function (err){ // yaya
-//nar.loadFromURL("./vender/net.narazaka.miyoforwebbw.nar", function (err){ // miyojs
+var loader = new Nar.Loader();
+//loader.loadFromURL("./vendor/Ageha.nar", function (err, nar){ // kawari
+loader.loadFromURL("./vendor/R_POST_and_KOMAINU.nar", function (err, nar){ // satori
+//loader.loadFromURL("./vendor/konnoyayame.nar", function (err, nar){ // yaya
   if(!!err) return console.error(err.stack);
 
   if(nar.install.type === "ghost"){
@@ -28,7 +27,7 @@ nar.loadFromURL("./vender/R_POST_and_KOMAINU.nar", function (err){ // satori
   }
 
   Error.stackTraceLimit = Infinity;
-  ghost.path = './vender/';
+  ghost.path += './vendor/';
   ghost.logging = true;
 
   ghost.load(function(err){

@@ -1,21 +1,20 @@
 {
   "name":           "ikagaka.ghost.js",
-  "version":        "0.2.8",
+  "version":        "0.3.0",
   "description":    "Ikagaka Shiori Wrapper",
   "url":            "https://github.com/ikagaka/Ghost.js",
   "keywords":       ["nar", "ikagaka", "unstable", "ukagaka"],
   "scripts": {
-    "copy": "npm run enc; npm run aya5; npm run kawari; npm run kawari7; npm run satori; npm run yaya; npm run nativeshiori; npm run workers;",
-    "enc":    "cp ./node_modules/encoding-japanese/encoding.min.js ./vender",
-    "aya5":   "cp ./node_modules/aya5.js/aya5_240/aya5.js ./vender",
-    "kawari": "cp ./node_modules/kawari.js/kawari-828/build/mach/em/kawari.js ./vender",
-    "kawari7":"cp ./node_modules/kawari7.js/kawari-750-kdt/src/shiori_js/kawari7.js ./vender",
-    "satori": "cp ./node_modules/libsatori.js/satoriya/satori/libsatori.js ./vender",
-    "yaya":   "cp ./node_modules/yaya.js/aya5/yaya.js ./vender",
-    "nativeshiori": "cp ./node_modules/nativeshiori/nativeshiori.js ./vender",
-    "workers": "cp ./*Worker.js ./vender",
-    "watch": "coffee -cbw ./*.coffee",
-    "build": "coffee -cb ./*.coffee"
+    "copy": "npm run enc; npm run aya5; npm run kawari; npm run kawari7; npm run satori; npm run yaya; npm run nativeshiori;",
+    "enc":    "cp ./node_modules/encoding-japanese/encoding.min.js ./vendor",
+    "aya5":   "cp ./node_modules/aya5.js/aya5_240/aya5.js ./vendor",
+    "kawari": "cp ./node_modules/kawari.js/kawari-828/build/mach/em/kawari.js ./vendor",
+    "kawari7":"cp ./node_modules/kawari7.js/kawari-750-kdt/src/shiori_js/kawari7.js ./vendor",
+    "satori": "cp ./node_modules/libsatori.js/satoriya/satori/libsatori.js ./vendor",
+    "yaya":   "cp ./node_modules/yaya.js/aya5/yaya.js ./vendor",
+    "nativeshiori": "cp ./node_modules/nativeshiori/nativeshiori.js ./vendor",
+    "watch": "coffee -cw ./*.coffee",
+    "build": "coffee -c ./*.coffee"
   },
   "repository": {
     "type":         "git",
