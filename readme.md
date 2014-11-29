@@ -6,11 +6,11 @@
 
 ```html
 <script src="./node_modules/ikagaka.nar.js/node_modules/encoding-japanese/encoding.js"></script>
-<script src="./node_modules/ikagaka.nar.js/vender/jszip.min.js"></script>
-<script src="./node_modules/ikagaka.nar.js/vender/XHRProxy.min.js"></script>
-<script src="./node_modules/ikagaka.nar.js/vender/WMDescript.js"></script>
+<script src="./node_modules/ikagaka.nar.js/vendor/jszip.min.js"></script>
+<script src="./node_modules/ikagaka.nar.js/vendor/XHRProxy.min.js"></script>
+<script src="./node_modules/ikagaka.nar.js/vendor/WMDescript.js"></script>
 <script src="./node_modules/ikagaka.nar.js/Nar.js"></script>
-<script src="./node_modules/ikagaka.shell.js/vender/zepto.min.js"></script>
+<script src="./node_modules/ikagaka.shell.js/vendor/zepto.min.js"></script>
 <script src="./node_modules/ikagaka.shell.js/SurfaceUtil.js"></script>
 <script src="./node_modules/underscore/underscore-min.js"></script>
 <script src="./Ghost.js"></script>
