@@ -124,7 +124,7 @@ class Ghost
     kawari7:
       detect: (dir)-> !!dir["kawari.ini"] # no kis and ini
       imports: ["encoding.min.js", "nativeshiori.js", "kawari7.js"]
-      worker: [Ghost.nativeShioriWorkerScript, ["Kawari7Shiori"]]
+      worker: [Ghost.nativeShioriWorkerScript, ["Kawari7"]]
     satori:
       detect: (dir)-> !!dir["satori.dll"]
       imports: ["encoding.min.js", "nativeshiori.js", "libsatori.js"]
