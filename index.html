@@ -30,43 +30,38 @@ loader.loadFromURL("./vendor/R_POST_and_KOMAINU.nar", function (err, nar){ // sa
   ghost.path += './vendor/';
   ghost.logging = true;
 
-  ghost.load(function(err){
-    if(!!err) return console.error(err.stack);
-
+  ghost.load.then(function(code){
     console.log(ghost);
 
-    var request_callback = function(err, response){
-      if(!!err) return console.error(err.stack);
-    };
-
     var standing = true;
-    ghost.request("GET SHIORI/3.0\r\nID: OnBoot\r\nSender: embryo\r\nCharset: Shift_JIS\r\nReference0: 0\r\n\r\n", request_callback);
+    var transaction = ghost.request("GET SHIORI/3.0\r\nID: OnBoot\r\nSender: embryo\r\nCharset: Shift_JIS\r\nReference0: 0\r\n\r\n");
     var OnSecondChange;
     OnSecondChange = function (){
       if(standing){
-        ghost.request("GET SHIORI/3.0\r\nID: OnSecondChange\r\nSender: embryo\r\nCharset: Shift_JIS\r\nReference0: 0\r\nReference1: 0\r\nReference2: 0\r\nReference3: 1\r\n\r\n", request_callback);
+        ghost.request("GET SHIORI/3.0\r\nID: OnSecondChange\r\nSender: embryo\r\nCharset: Shift_JIS\r\nReference0: 0\r\nReference1: 0\r\nReference2: 0\r\nReference3: 1\r\n\r\n");
         setTimeout(OnSecondChange, 1000);
       }
     };
     setTimeout(OnSecondChange, 1000);
     var talk_interval = function(){
-      ghost.request("GET SHIORI/3.0\r\nID: OnSetting.talk_interval\r\nSender: embryo\r\nCharset: Shift_JIS\r\n\r\n", request_callback);
+      ghost.request("GET SHIORI/3.0\r\nID: OnSetting.talk_interval\r\nSender: embryo\r\nCharset: Shift_JIS\r\n\r\n");
     };
     setTimeout(talk_interval, 2000);
     var talk_interval_set_30 = function(){
-      ghost.request("GET SHIORI/3.0\r\nID: OnSetting.talk_interval.set.30\r\nSender: embryo\r\nCharset: Shift_JIS\r\n\r\n", request_callback);
+      ghost.request("GET SHIORI/3.0\r\nID: OnSetting.talk_interval.set.30\r\nSender: embryo\r\nCharset: Shift_JIS\r\n\r\n");
     };
     setTimeout(talk_interval_set_30, 3500);
     var OnClose = function(){
-      ghost.request("GET SHIORI/3.0\r\nID: OnClose\r\nSender: embryo\r\nCharset: Shift_JIS\r\n\r\n", request_callback);
+      ghost.request("GET SHIORI/3.0\r\nID: OnClose\r\nSender: embryo\r\nCharset: Shift_JIS\r\n\r\n");
       standing = false;
-      ghost.unload(function(err){
-        if(!!err) return console.error(err.stack);
+      ghost.unload.then(function(err){
         console.log("finish");
       });
     };
     setTimeout(OnClose, 180 * 1000);
 
+  })["catch"](function(err){
+    console.error(err.stack);
   });
 });
 </script>

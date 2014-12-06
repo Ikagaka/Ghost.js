@@ -28,37 +28,32 @@ nar.loadFromURL("./vender/dot_sakura_020_060506a.nar", function (err){
   ghost.path = './vender/';
   ghost.logging = true;
 
-  ghost.load(function(err){
-    if(!!err) return console.error(err.stack);
-
+  ghost.load.then(function(code){
     console.log(ghost);
 
-    var request_callback = function(err, response){
-      if(!!err) return console.error(err.stack);
-
-      console.log(response);
-    };
     var standing = true;
-    ghost.request("GET Version SHIORI/2.6\r\nSender: embryo\r\nCharset: Shift_JIS\r\n\r\n", request_callback);
-    ghost.request("GET Sentence SHIORI/2.6\r\nEvent: OnBoot\r\nSender: embryo\r\nCharset: Shift_JIS\r\n\r\n", request_callback);
+    ghost.request("GET Version SHIORI/2.6\r\nSender: embryo\r\nCharset: Shift_JIS\r\n\r\n");
+    ghost.request("GET Sentence SHIORI/2.6\r\nEvent: OnBoot\r\nSender: embryo\r\nCharset: Shift_JIS\r\n\r\n");
     var OnSecondChange;
     OnSecondChange = function (){
       if(standing){
-        ghost.request("GET Sentence SHIORI/2.6\r\nEvent: OnSecondChange\r\nSender: embryo\r\nCharset: Shift_JIS\r\nReference0: 0\r\nReference1: 0\r\nReference2: 0\r\nReference3: 1\r\n\r\n", request_callback);
+        ghost.request("GET Sentence SHIORI/2.6\r\nEvent: OnSecondChange\r\nSender: embryo\r\nCharset: Shift_JIS\r\nReference0: 0\r\nReference1: 0\r\nReference2: 0\r\nReference3: 1\r\n\r\n");
         setTimeout(OnSecondChange, 1000);
       }
     };
     setTimeout(OnSecondChange, 1000);
     var OnClose = function(){
-      ghost.request("GET Sentence SHIORI/2.6\r\nEvent: OnClose\r\nSender: embryo\r\nCharset: Shift_JIS\r\n\r\n", request_callback);
+      ghost.request("GET Sentence SHIORI/2.6\r\nEvent: OnClose\r\nSender: embryo\r\nCharset: Shift_JIS\r\n\r\n");
       standing = false;
-      ghost.unload(function(err){
+      ghost.unload.then(function(err){
         if(!!err) return console.error(err.stack);
         console.log("finish");
       });
     };
     setTimeout(OnClose, 180 * 1000);
 
+  })["catch"](function(err){
+    console.error(err.stack);
   });
 });
 </script>

@@ -44,40 +44,44 @@ class Ghost
     @descript = Nar.parseDescript(descriptTxt)
     @server = null
 
-  load: (callback)->
-    if !@directory[@descript["shiori"]] and !@directory["shiori.dll"]
-      setTimeout(callback.bind(null, new Error("shiori not found"))); return
+  load: ->
+    new Promise (resolve, reject) =>
+      if !@directory[@descript["shiori"]] and !@directory["shiori.dll"]
+        return reject("shiori not found")
 
-    keys = Object.keys(Ghost.shiories)
-    shiori = keys.find (shiori)=> Ghost.shiories[shiori].detect(@directory)
-    if !shiori
-      setTimeout(callback.bind(null, new Error("unkown shiori"))); return
+      keys = Object.keys(Ghost.shiories)
+      shiori = keys.find (shiori)=> Ghost.shiories[shiori].detect(@directory)
+      if !shiori
+        return reject("unkown shiori")
 
-    if !Ghost.shiories[shiori].worker?
-      setTimeout(callback.bind(null, new Error("unsupport shiori"))); return
+      if !Ghost.shiories[shiori].worker?
+        return reject("unsupport shiori")
 
-    [fn, args] = Ghost.shiories[shiori].worker
-    imports = (Ghost.shiories[shiori].imports || []).map (src)=> @path + src
+      [fn, args] = Ghost.shiories[shiori].worker
+      imports = (Ghost.shiories[shiori].imports || []).map (src)=> @path + src
 
-    @server = new ServerWorker(fn, args, imports)
-    [directory, buffers] = Ghost.createTransferable(@directory)
+      @server = new ServerWorker(fn, args, imports)
+      [directory, buffers] = Ghost.createTransferable(@directory)
 
-    @server.request "load", directory, buffers, (err, code)->
-      callback(err, code)
+      @server.request "load", directory, buffers, (err, code)->
+        if err? then reject err else resolve code
 
-    @directory = null
-    return
+      @directory = null
 
-  request: (request, callback)->
-    console.log(request) if @logging
-    @server.request "request", request, (err, response)=>
-      console.log(response) if @logging
-      callback(err, response)
-    return
+  request: (request)->
+    new Promise (resolve, reject) =>
+      console.log(request) if @logging
+      @server.request "request", request, (err, response)=>
+        if err?
+          reject err
+        else
+          console.log(response) if @logging
+          resolve response
 
-  unload: (callback)->
-    @server.request "unload", (err, code)-> callback(err, code)
-    return
+  unload: ->
+    new Promise (resolve, reject) =>
+      @server.request "unload", (err, code) ->
+        if err? then reject err else resolve code
 
   path: location.protocol + "//" + location.host + location.pathname.split("/").reverse().slice(1).reverse().join("/") + "/"
 
