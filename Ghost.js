@@ -78,7 +78,7 @@
         throw new Error("descript.txt not found");
       }
       this.directory = directory;
-      buffer = this.directory["descript.txt"].asArrayBuffer();
+      buffer = this.directory["descript.txt"];
       descriptTxt = Nar.convert(buffer);
       this.descript = Nar.parseDescript(descriptTxt);
       this.server = null;
@@ -257,7 +257,7 @@
       return hits.reduce((function(_arg, key) {
         var buffer, buffers, _dic;
         _dic = _arg[0], buffers = _arg[1];
-        buffer = dic[key].asArrayBuffer();
+        buffer = dic[key];
         _dic[key] = buffer;
         buffers.push(buffer);
         return [_dic, buffers];

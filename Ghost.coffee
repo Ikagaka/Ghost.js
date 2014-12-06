@@ -39,7 +39,7 @@ class Ghost
   constructor: (directory)->
     if !directory["descript.txt"] then throw new Error("descript.txt not found")
     @directory = directory
-    buffer = @directory["descript.txt"].asArrayBuffer()
+    buffer = @directory["descript.txt"]
     descriptTxt = Nar.convert(buffer)
     @descript = Nar.parseDescript(descriptTxt)
     @server = null
@@ -148,7 +148,7 @@ class Ghost
     keys = Object.keys(dic)
     hits = keys.filter((filepath)-> !!filepath)
     hits.reduce((([_dic, buffers], key)->
-      buffer = dic[key].asArrayBuffer()
+      buffer = dic[key]
       _dic[key] = buffer
       buffers.push(buffer)
       [_dic, buffers]
