@@ -15,7 +15,7 @@
       this.url = URL.createObjectURL(new Blob([
         imports.map(function(src) {
           return "importScripts('" + src + "');\n";
-        }).join("") + "\n", "(" + ServerWorker.Server + ")();\n", "(" + fn + ")(" + (args.map(JSON.stringify).join(",")) + ");"
+        }).join("") + "\n", "(" + ServerWorker.Server + ")();\n", "var createTransferable = " + ServerWorker.createTransferable + ";\n", "(" + fn + ")(" + (args.map(JSON.stringify).join(",")) + ");"
       ], {
         type: "text/javascript"
       }));
@@ -55,16 +55,33 @@
         var handlers;
         handlers = {};
         self.addEventListener("message", function(_arg) {
-          var data, event, id, _ref;
+          var data, event, id, reply, _ref;
           _ref = _arg.data, id = _ref[0], event = _ref[1], data = _ref[2];
-          handlers[event](data, function() {
-            return self.postMessage([id, [].slice.call(arguments)]);
-          });
+          reply = function(args, transferable) {
+            return self.postMessage([id, args], transferable);
+          };
+          handlers[event](data, reply);
         });
         return self.on = function(event, callback) {
           handlers[event] = callback;
         };
       })();
+    };
+
+    ServerWorker.createTransferable = function(dic) {
+      var hits, keys;
+      keys = Object.keys(dic);
+      hits = keys.filter(function(filepath) {
+        return !!filepath;
+      });
+      return hits.reduce((function(_arg, key) {
+        var buffer, buffers, _dic;
+        _dic = _arg[0], buffers = _arg[1];
+        buffer = dic[key];
+        _dic[key] = buffer;
+        buffers.push(buffer);
+        return [_dic, buffers];
+      }), [{}, []]);
     };
 
     return ServerWorker;
@@ -88,25 +105,22 @@
       return new Promise((function(_this) {
         return function(resolve, reject) {
           var args, buffers, directory, fn, imports, keys, shiori, _ref, _ref1;
-          if (!_this.directory[_this.descript["shiori"]] && !_this.directory["shiori.dll"]) {
-            return reject("shiori not found");
-          }
           keys = Object.keys(Ghost.shiories);
           shiori = keys.find(function(shiori) {
             return Ghost.shiories[shiori].detect(_this.directory);
           });
           if (!shiori) {
-            return reject("unkown shiori");
+            return reject(new Error("shiori not found or unknown shiori"));
           }
           if (Ghost.shiories[shiori].worker == null) {
-            return reject("unsupport shiori");
+            return reject(new Error("unsupport shiori"));
           }
           _ref = Ghost.shiories[shiori].worker, fn = _ref[0], args = _ref[1];
           imports = (Ghost.shiories[shiori].imports || []).map(function(src) {
             return _this.path + src;
           });
           _this.server = new ServerWorker(fn, args, imports);
-          _ref1 = Ghost.createTransferable(_this.directory), directory = _ref1[0], buffers = _ref1[1];
+          _ref1 = ServerWorker.createTransferable(_this.directory), directory = _ref1[0], buffers = _ref1[1];
           _this.server.request("load", directory, buffers, function(err, code) {
             if (err != null) {
               return reject(err);
@@ -142,11 +156,11 @@
     Ghost.prototype.unload = function() {
       return new Promise((function(_this) {
         return function(resolve, reject) {
-          return _this.server.request("unload", function(err, code) {
+          return _this.server.request("unload", function(err, code, dirs) {
             if (err != null) {
               return reject(err);
             } else {
-              return resolve(code);
+              return resolve([code, dirs]);
             }
           });
         };
@@ -173,7 +187,7 @@
         } catch (_error) {
           error = _error;
         }
-        return reply(error, code);
+        return reply([error, code]);
       });
       self.on("request", function(request, reply) {
         var error, response;
@@ -182,16 +196,20 @@
         } catch (_error) {
           error = _error;
         }
-        return reply(error, response);
+        return reply([error, response]);
       });
       self.on("unload", function(_, reply) {
-        var code, error;
+        var buffers, code, directory, dirs, error, _ref;
         try {
           code = shiorihandler.unload();
+          directory = {
+            "descript.txt": new ArrayBuffer(1)
+          };
+          _ref = createTransferable(directory), dirs = _ref[0], buffers = _ref[1];
         } catch (_error) {
           error = _error;
         }
-        return reply(error, code);
+        return reply([error, code, dirs], buffers);
       });
       return prepareSatori = function(data) {
         var filepath, filestr, uint8arr;
@@ -261,22 +279,6 @@
           return !!dir["misaka.dll"];
         }
       }
-    };
-
-    Ghost.createTransferable = function(dic) {
-      var hits, keys;
-      keys = Object.keys(dic);
-      hits = keys.filter(function(filepath) {
-        return !!filepath;
-      });
-      return hits.reduce((function(_arg, key) {
-        var buffer, buffers, _dic;
-        _dic = _arg[0], buffers = _arg[1];
-        buffer = dic[key];
-        _dic[key] = buffer;
-        buffers.push(buffer);
-        return [_dic, buffers];
-      }), [{}, []]);
     };
 
     Ghost.ServerWorker = ServerWorker;

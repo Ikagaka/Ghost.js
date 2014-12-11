@@ -7,6 +7,7 @@ class ServerWorker
       new Blob([
         imports.map((src)-> "importScripts('#{src}');\n").join("") + "\n"
         "(#{ServerWorker.Server})();\n"
+        "var createTransferable = #{ServerWorker.createTransferable};\n"
         "(#{fn})(#{args.map(JSON.stringify).join(",")});"
       ], {type:"text/javascript"}))
     @worker = new Worker(@url)
@@ -28,12 +29,22 @@ class ServerWorker
     do ->
       handlers = {}
       self.addEventListener "message", ({data: [id, event, data]})->
-        handlers[event] data, ->
-          self.postMessage([id, [].slice.call(arguments)])
+        reply = (args, transferable)->
+          self.postMessage([id, args], transferable)
+        handlers[event](data, reply)
         return
       self.on = (event, callback)->
         handlers[event] = callback
         return
+  @createTransferable: (dic)->
+    keys = Object.keys(dic)
+    hits = keys.filter((filepath)-> !!filepath)
+    hits.reduce((([_dic, buffers], key)->
+      buffer = dic[key]
+      _dic[key] = buffer
+      buffers.push(buffer)
+      [_dic, buffers]
+    ), [{}, []])
 
 class Ghost
   constructor: (directory)->
@@ -46,22 +57,19 @@ class Ghost
 
   load: ->
     new Promise (resolve, reject) =>
-      if !@directory[@descript["shiori"]] and !@directory["shiori.dll"]
-        return reject("shiori not found")
-
       keys = Object.keys(Ghost.shiories)
       shiori = keys.find (shiori)=> Ghost.shiories[shiori].detect(@directory)
       if !shiori
-        return reject("unkown shiori")
+        return reject(new Error("shiori not found or unknown shiori"))
 
       if !Ghost.shiories[shiori].worker?
-        return reject("unsupport shiori")
+        return reject(new Error("unsupport shiori"))
 
       [fn, args] = Ghost.shiories[shiori].worker
       imports = (Ghost.shiories[shiori].imports || []).map (src)=> @path + src
 
       @server = new ServerWorker(fn, args, imports)
-      [directory, buffers] = Ghost.createTransferable(@directory)
+      [directory, buffers] = ServerWorker.createTransferable(@directory)
 
       @server.request "load", directory, buffers, (err, code)->
         if err? then reject err else resolve code
@@ -80,8 +88,10 @@ class Ghost
 
   unload: ->
     new Promise (resolve, reject) =>
-      @server.request "unload", (err, code) ->
-        if err? then reject err else resolve code
+      @server.request "unload", (err, code, dirs) ->
+        if err?
+        then reject(err)
+        else resolve([code, dirs])
 
   path: location.protocol + "//" + location.host + location.pathname.split("/").reverse().slice(1).reverse().join("/") + "/"
 
@@ -97,17 +107,23 @@ class Ghost
       shiorihandler = new NativeShiori(shiori, dirs, true)
       try code = shiorihandler.load('/home/web_user/')
       catch error
-      reply(error, code)
+      reply([error, code])
 
     self.on "request", (request, reply)->
       try response = shiorihandler.request(request)
       catch error
-      reply(error, response)
+      reply([error, response])
 
     self.on "unload", (_, reply)->
-      try code = shiorihandler.unload()
+      try
+        code = shiorihandler.unload()
+
+        # dirs response example
+        directory = {"descript.txt": new ArrayBuffer(1)};
+        
+        [dirs, buffers] = createTransferable(directory)
       catch error
-      reply(error, code)
+      reply([error, code, dirs], buffers)
 
     prepareSatori = (data)->
       for filepath of data
@@ -148,15 +164,6 @@ class Ghost
     misaka:
       detect: (dir)-> !!dir["misaka.dll"]
 
-  @createTransferable: (dic)->
-    keys = Object.keys(dic)
-    hits = keys.filter((filepath)-> !!filepath)
-    hits.reduce((([_dic, buffers], key)->
-      buffer = dic[key]
-      _dic[key] = buffer
-      buffers.push(buffer)
-      [_dic, buffers]
-    ), [{}, []])
 
   @ServerWorker = ServerWorker
 
