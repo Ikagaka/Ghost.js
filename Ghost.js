@@ -26,9 +26,9 @@
       });
       this.worker.addEventListener("message", (function(_this) {
         return function(_arg) {
-          var args, id, _ref;
+          var args, id, _ref, _ref1;
           _ref = _arg.data, id = _ref[0], args = _ref[1];
-          _this.callbacks[id].apply(null, args);
+          (_ref1 = _this.callbacks)[id].apply(_ref1, args);
           return delete _this.callbacks[id];
         };
       })(this));
@@ -89,8 +89,12 @@
   })();
 
   Ghost = (function() {
-    function Ghost(directory) {
-      var buffer, descriptTxt;
+    function Ghost(dirpath, directory, path) {
+      var args, buffer, descriptTxt, fn, imports, shiori, _ref;
+      this.dirpath = dirpath;
+      if (path == null) {
+        path = '';
+      }
       if (!directory["descript.txt"]) {
         throw new Error("descript.txt not found");
       }
@@ -98,37 +102,53 @@
       buffer = this.directory["descript.txt"];
       descriptTxt = Nar.convert(buffer);
       this.descript = Nar.parseDescript(descriptTxt);
-      this.server = null;
+      shiori = Object.keys(Ghost.shiories).find((function(_this) {
+        return function(shiori) {
+          return Ghost.shiories[shiori].detect(_this.directory);
+        };
+      })(this));
+      if (!shiori) {
+        throw new Error("shiori not found or unknown shiori");
+      }
+      if (Ghost.shiories[shiori].worker == null) {
+        throw new Error("unsupport shiori");
+      }
+      _ref = Ghost.shiories[shiori].worker, fn = _ref[0], args = _ref[1];
+      imports = (Ghost.shiories[shiori].imports || []).map((function(_this) {
+        return function(src) {
+          return _this.path + path + src;
+        };
+      })(this));
+      this.server = new ServerWorker(fn, args, imports);
     }
+
+    Ghost.prototype.push = function() {
+      return new Promise((function(_this) {
+        return function(resolve, reject) {
+          var buffers, directory, _ref;
+          _ref = ServerWorker.createTransferable(_this.directory), directory = _ref[0], buffers = _ref[1];
+          _this.server.request("push", [_this.dirpath, directory], buffers, function(err) {
+            if (err != null) {
+              return reject(err);
+            } else {
+              return resolve();
+            }
+          });
+          return _this.directory = null;
+        };
+      })(this));
+    };
 
     Ghost.prototype.load = function() {
       return new Promise((function(_this) {
         return function(resolve, reject) {
-          var args, buffers, directory, fn, imports, keys, shiori, _ref, _ref1;
-          keys = Object.keys(Ghost.shiories);
-          shiori = keys.find(function(shiori) {
-            return Ghost.shiories[shiori].detect(_this.directory);
-          });
-          if (!shiori) {
-            return reject(new Error("shiori not found or unknown shiori"));
-          }
-          if (Ghost.shiories[shiori].worker == null) {
-            return reject(new Error("unsupport shiori"));
-          }
-          _ref = Ghost.shiories[shiori].worker, fn = _ref[0], args = _ref[1];
-          imports = (Ghost.shiories[shiori].imports || []).map(function(src) {
-            return _this.path + src;
-          });
-          _this.server = new ServerWorker(fn, args, imports);
-          _ref1 = ServerWorker.createTransferable(_this.directory), directory = _ref1[0], buffers = _ref1[1];
-          _this.server.request("load", directory, buffers, function(err, code) {
+          return _this.server.request("load", _this.dirpath, function(err, code) {
             if (err != null) {
               return reject(err);
             } else {
               return resolve(code);
             }
           });
-          return _this.directory = null;
         };
       })(this));
     };
@@ -156,11 +176,25 @@
     Ghost.prototype.unload = function() {
       return new Promise((function(_this) {
         return function(resolve, reject) {
-          return _this.server.request("unload", function(err, code, dirs) {
+          return _this.server.request("unload", function(err, code) {
             if (err != null) {
               return reject(err);
             } else {
-              return resolve([code, dirs]);
+              return resolve(code);
+            }
+          });
+        };
+      })(this));
+    };
+
+    Ghost.prototype.pull = function() {
+      return new Promise((function(_this) {
+        return function(resolve, reject) {
+          return _this.server.request("pull", _this.dirpath, function(err, dirs) {
+            if (err != null) {
+              return reject(err);
+            } else {
+              return resolve(dirs);
             }
           });
         };
@@ -175,19 +209,28 @@
       var prepareSatori, shiori, shiorihandler;
       shiori = new self[CONSTRUCTOR_NAME]();
       shiori.Module.logReadFiles = true;
-      shiorihandler = null;
-      self.on("load", function(dirs, reply) {
-        var code, error;
+      shiorihandler = new NativeShiori(shiori, true);
+      self.on("push", function(_arg, reply) {
+        var dirpath, dirs, error;
+        dirpath = _arg[0], dirs = _arg[1];
         if (CONSTRUCTOR_NAME === "Satori") {
           dirs = prepareSatori(dirs);
         }
-        shiorihandler = new NativeShiori(shiori, dirs, true);
         try {
-          code = shiorihandler.load('/home/web_user/');
+          shiorihandler.push(dirpath, dirs);
         } catch (_error) {
           error = _error;
         }
-        return reply([error, code]);
+        return reply([error != null ? error.stack : void 0]);
+      });
+      self.on("load", function(dirpath, reply) {
+        var code, error;
+        try {
+          code = shiorihandler.load(dirpath);
+        } catch (_error) {
+          error = _error;
+        }
+        return reply([error != null ? error.stack : void 0, code]);
       });
       self.on("request", function(request, reply) {
         var error, response;
@@ -196,20 +239,26 @@
         } catch (_error) {
           error = _error;
         }
-        return reply([error, response]);
+        return reply([error != null ? error.stack : void 0, response]);
       });
       self.on("unload", function(_, reply) {
-        var buffers, code, directory, dirs, error, _ref;
+        var code, error;
         try {
           code = shiorihandler.unload();
-          directory = {
-            "descript.txt": new ArrayBuffer(1)
-          };
+        } catch (_error) {
+          error = _error;
+        }
+        return reply([error != null ? error.stack : void 0, code]);
+      });
+      self.on("pull", function(dirpath, reply) {
+        var buffers, directory, dirs, error, _ref;
+        try {
+          directory = shiorihandler.pull(dirpath);
           _ref = createTransferable(directory), dirs = _ref[0], buffers = _ref[1];
         } catch (_error) {
           error = _error;
         }
-        return reply([error, code, dirs], buffers);
+        return reply([error != null ? error.stack : void 0, dirs], buffers);
       });
       return prepareSatori = function(data) {
         var filepath, filestr, uint8arr;

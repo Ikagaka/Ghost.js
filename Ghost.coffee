@@ -14,7 +14,7 @@ class ServerWorker
     @worker.addEventListener "error", (ev)->
       console.error(ev.error?.stack || ev.error || ev)
     @worker.addEventListener "message", ({data: [id, args]})=>
-      @callbacks[id].apply(null, args)
+      @callbacks[id](args...)
       delete @callbacks[id]
     @requestId = 0
     @callbacks = {}
@@ -47,34 +47,32 @@ class ServerWorker
     ), [{}, []])
 
 class Ghost
-  constructor: (directory)->
+  constructor: (@dirpath, directory, path='')->
     if !directory["descript.txt"] then throw new Error("descript.txt not found")
     @directory = directory
     buffer = @directory["descript.txt"]
     descriptTxt = Nar.convert(buffer)
     @descript = Nar.parseDescript(descriptTxt)
-    @server = null
+    shiori = Object.keys(Ghost.shiories).find (shiori)=> Ghost.shiories[shiori].detect(@directory)
+    if !shiori
+      throw new Error("shiori not found or unknown shiori")
+    if !Ghost.shiories[shiori].worker?
+      throw new Error("unsupport shiori")
+    [fn, args] = Ghost.shiories[shiori].worker
+    imports = (Ghost.shiories[shiori].imports || []).map (src)=> @path + path + src
+    @server = new ServerWorker(fn, args, imports)
+
+  push: ->
+    new Promise (resolve, reject) =>
+      [directory, buffers] = ServerWorker.createTransferable(@directory)
+      @server.request "push", [@dirpath, directory], buffers, (err)->
+        if err? then reject err else resolve()
+      @directory = null
 
   load: ->
     new Promise (resolve, reject) =>
-      keys = Object.keys(Ghost.shiories)
-      shiori = keys.find (shiori)=> Ghost.shiories[shiori].detect(@directory)
-      if !shiori
-        return reject(new Error("shiori not found or unknown shiori"))
-
-      if !Ghost.shiories[shiori].worker?
-        return reject(new Error("unsupport shiori"))
-
-      [fn, args] = Ghost.shiories[shiori].worker
-      imports = (Ghost.shiories[shiori].imports || []).map (src)=> @path + src
-
-      @server = new ServerWorker(fn, args, imports)
-      [directory, buffers] = ServerWorker.createTransferable(@directory)
-
-      @server.request "load", directory, buffers, (err, code)->
+      @server.request "load", @dirpath, (err, code)->
         if err? then reject err else resolve code
-
-      @directory = null
 
   request: (request)->
     new Promise (resolve, reject) =>
@@ -88,10 +86,13 @@ class Ghost
 
   unload: ->
     new Promise (resolve, reject) =>
-      @server.request "unload", (err, code, dirs) ->
-        if err?
-        then reject(err)
-        else resolve([code, dirs])
+      @server.request "unload", (err, code) ->
+        if err?  then reject(err) else resolve(code)
+
+  pull: ->
+    new Promise (resolve, reject) =>
+      @server.request "pull", @dirpath, (err, dirs) ->
+        if err?  then reject(err) else resolve(dirs)
 
   path: location.protocol + "//" + location.host + location.pathname.split("/").reverse().slice(1).reverse().join("/") + "/"
 
@@ -100,30 +101,38 @@ class Ghost
   @nativeShioriWorkerScript = (CONSTRUCTOR_NAME)->
     shiori = new self[CONSTRUCTOR_NAME]()
     shiori.Module.logReadFiles = true
-    shiorihandler = null
+    shiorihandler = new NativeShiori(shiori, true)
 
-    self.on "load", (dirs, reply)->
+    self.on "push", ([dirpath, dirs], reply)->
       dirs = prepareSatori(dirs) if CONSTRUCTOR_NAME is "Satori"
-      shiorihandler = new NativeShiori(shiori, dirs, true)
-      try code = shiorihandler.load('/home/web_user/')
+      try
+        shiorihandler.push(dirpath, dirs)
       catch error
-      reply([error, code])
+      reply([error?.stack])
+
+    self.on "load", (dirpath, reply)->
+      try
+        code = shiorihandler.load(dirpath)
+      catch error
+      reply([error?.stack, code])
 
     self.on "request", (request, reply)->
       try response = shiorihandler.request(request)
       catch error
-      reply([error, response])
+      reply([error?.stack, response])
 
     self.on "unload", (_, reply)->
       try
         code = shiorihandler.unload()
+      catch error
+      reply([error?.stack, code])
 
-        # dirs response example
-        directory = {"descript.txt": new ArrayBuffer(1)};
-        
+    self.on "pull", (dirpath, reply)->
+      try
+        directory = shiorihandler.pull(dirpath)
         [dirs, buffers] = createTransferable(directory)
       catch error
-      reply([error, code, dirs], buffers)
+      reply([error?.stack, dirs], buffers)
 
     prepareSatori = (data)->
       for filepath of data
