@@ -11,7 +11,7 @@
 		"aya5.js": "",
 		"ikagaka.nar.js": "Ikagaka/Nar.js"
 	},
-	"main": ["Ghost.js"],
+	"main": ["lib/Ghost.js"],
 	"ignore": [
 		"**/.*",
 		"bower_components",

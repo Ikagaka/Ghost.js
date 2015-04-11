@@ -1,6 +1,6 @@
 {
   "name":           "ikagaka.ghost.js",
-  "version":        "0.3.3",
+  "version":        "0.3.4",
   "description":    "Ikagaka Shiori Wrapper",
   "url":            "https://github.com/ikagaka/Ghost.js",
   "keywords":       ["nar", "ikagaka", "unstable", "ukagaka"],
@@ -32,9 +32,18 @@
     "libsatori.js": ""
   },
   "devDependencies": {
-    "coffee-script": ""
+    "es6-promise": "",
+    "coffee-script": "",
+    "mocha": "",
+    "chai": "",
+    "chai-as-promised": "",
+    "sinon": "",
+    "istanbul": "",
+    "jade": "",
+    "codo": "",
+    "mocha-phantomjs": ""
   },
-  "main":           "./Ghost.js",
+  "main":           "./index.js",
   "author":         "Ikagaka",
   "license":        "MIT",
   "contributors":   ["narazaka", "legokichi"]
