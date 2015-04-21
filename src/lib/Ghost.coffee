@@ -11,9 +11,9 @@ class Ghost
     unless shiori_name? then throw new Error("shiori not found or unknown shiori")
     @shiori = new Ghost.shiories[shiori_name](@fs)
 
-  load: ->
+  load: (dirpath) ->
     new Promise (resolve, reject) =>
-      resolve @shiori.load @dirpath
+      resolve @shiori.load dirpath
 
   request: (request)->
     new Promise (resolve, reject) =>
