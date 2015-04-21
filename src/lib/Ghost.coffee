@@ -3,13 +3,13 @@ class Ghost
   @shiori_detectors = []
   @shiories = {}
 
-  constructor: (@fs)->
+  constructor: (fs)->
     for shiori_detector in Ghost.shiori_detectors
-      if shiori_detector.detect(@fs)
+      if shiori_detector.detect(fs)
         shiori_name = shiori_detector.name
         break
     unless shiori_name? then throw new Error("shiori not found or unknown shiori")
-    @shiori = new Ghost.shiories[shiori_name](@fs)
+    @shiori = new Ghost.shiories[shiori_name](fs)
 
   load: (dirpath) ->
     new Promise (resolve, reject) =>
